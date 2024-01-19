@@ -28,14 +28,23 @@ intakeOutSelection: Controller.Button = controller.buttonL2  # Top left bottom
 moveArmUpSelection: Controller.Button = controller.buttonR1  # Top Right
 moveArmDownSelection: Controller.Button = controller.buttonR2  # Top right down
 
-wingToggleSelection: Controller.Button = controller.buttonB  # B Button
+wingToggleInSelection: Controller.Button = controller.buttonA  # A button
+wingToggleOutSelection: Controller.Button = controller.buttonB  # B Button
 
 leftAxisSelection: Controller.Axis = controller.axis3  # Top-Bottom left
 rightAxisSelection: Controller.Axis = controller.axis2  # Top-Bottom right
 
+# Wings
+WINGS_TRIPORT_PORT: DigitalOut = DigitalOut(brain.three_wire_port.a)
+
+# Intake
 INTAKE_MOTOR_PORT: int = Ports.PORT12
+
+# Arms
 LEFT_ARM_MOTOR_PORT: int = Ports.PORT9
 RIGHT_ARM_MOTOR_PORT: int = Ports.PORT2
+
+# Drivetrain
 LEFT_FRONT_MOTOR_PORT: int = Ports.PORT20
 LEFT_BACK_MOTOR_PORT: int = Ports.PORT10
 RIGHT_FRONT_MOTOR_PORT: int = Ports.PORT11
@@ -87,6 +96,9 @@ def driver_control() -> None:
     # Intake Control (threaded)
     Thread(_driver_control_intake_control_thread)
 
+    # Wing Control (threaded)
+    Thread(_driver_control_wing_control_thread)
+
 def auton_control() -> None:
     pass
 
@@ -136,6 +148,16 @@ def _driver_control_intake_control_thread() -> None:
             INTAKE_MOTOR.stop(HOLD)
 
         # Stop the Thread from killing itself
+        wait(10, MSEC)
+
+def _driver_control_wing_control_thread() -> None:
+    while 1:
+        # Wait for button toggles
+        if wingToggleInSelection.pressing():
+            WINGS_TRIPORT_PORT.set(0)  # Set low to retract
+        elif wingToggleOutSelection.pressing():
+            WINGS_TRIPORT_PORT.set(1)  # Set high to expand
+
         wait(10, MSEC)
 
 # Run
