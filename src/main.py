@@ -100,7 +100,19 @@ def driver_control() -> None:
     Thread(_driver_control_wing_control_thread)
 
 def auton_control() -> None:
-    pass
+    ARM_MOTOR_GROUP.set_velocity(100, PERCENT)
+    ARM_MOTOR_GROUP.spin()
+    wait(20, SECONDS)
+    LEFT_DOM_MOTOR_GROUP.set_velocity(100, PERCENT)
+    LEFT_DOM_MOTOR_GROUP.spin()
+    wait(2, SECONDS)
+    LEFT_DOM_MOTOR_GROUP.set_velocity(100, PERCENT)
+    RIGHT_DOM_MOTOR_GROUP.set_velocity(100, PERCENT)
+    wait(5, SECONDS)
+    LEFT_DOM_MOTOR_GROUP.stop(coast)
+    wait(1, SECONDS)
+    WINGS_TRIPORT_PORT.set(1)
+    LEFT_DOM_MOTOR_GROUP.spin()
 
 # Private Methods
 def _driver_control_movement_thread() -> None:
