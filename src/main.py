@@ -57,7 +57,7 @@ RIGHT_BACK_MOTOR_PORT: int = Ports.PORT20
 # Interfaces
 
 # Constants
-IS_SKILL: bool = True
+IS_SKILL: bool = False
 
 # Motor definitions
 INTAKE_MOTOR: Motor = Motor(INTAKE_MOTOR_PORT, GearSetting.RATIO_18_1, False)
@@ -85,14 +85,13 @@ ARM_MOTOR_GROUP: MotorGroup = MotorGroup(LEFT_ARM_MOTOR, RIGHT_ARM_MOTOR)
 # main()
 def main() -> None:
     # Create a new Competition instance
-    auton_control()
-    # Competition(driver_control, auton_control)
+    # auton_control()
+    Competition(driver_control, auton_control)
 
 
 # Public Methods
 def driver_control() -> None:
     # Control loop
-
     # Movement (threaded)
     Thread(_driver_control_movement_thread)
 
@@ -172,11 +171,15 @@ def auton_control() -> None:
 
         # Stop
         INTAKE_MOTOR.stop(COAST)
+
+        # TODO:
+        # 1. 180 Turn + Adjust (Avoid the metal pole)
+        # 2. Move Forward
+        # 3. Wings open
+        # 4. Score (drive forward)
+
     elif IS_SKILL == False:
         # Normal Auton
-        # Set drive velocity
-        INTAKE_MOTOR.set_velocity(90, PERCENT)
-        ARM_MOTOR_GROUP.set_velocity(100, PERCENT)
         LEFT_DOM_MOTOR_GROUP.set_velocity(100, PERCENT)
         RIGHT_DOM_MOTOR_GROUP.set_velocity(100, PERCENT)
 
@@ -185,14 +188,20 @@ def auton_control() -> None:
         RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
 
         # Delay
-        wait(3, SECONDS)
+        wait(4, SECONDS)
 
-        # Move forward
-        LEFT_DOM_MOTOR_GROUP.spin(REVSRE)
-        RIGHT_DOM_MOTOR_GROUP.spin(REVSRE)
+        # Stop all
+        LEFT_DOM_MOTOR_GROUP.stop(COAST)
+        RIGHT_DOM_MOTOR_GROUP.stop(COAST)
+
+        # Move backwards
+        LEFT_DOM_MOTOR_GROUP.set_velocity(-100, PERCENT)
+        RIGHT_DOM_MOTOR_GROUP.set_velocity(-100, PERCENT)
+        LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
+        RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
 
         # Delay
-        wait(2, SECONDS)
+        wait(3, SECONDS)
 
         # Stop all
         LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
