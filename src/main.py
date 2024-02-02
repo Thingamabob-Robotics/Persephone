@@ -25,8 +25,8 @@ controller: Controller = Controller(PRIMARY)
 intakeInSelection: Controller.Button = controller.buttonL1  # Top left
 intakeOutSelection: Controller.Button = controller.buttonL2  # Top left bottom
 
-moveArmUpSelection: Controller.Button = controller.buttonUp  # Top Right
-moveArmDownSelection: Controller.Button = controller.buttonDown  # Top right down
+moveArmUpSelection: Controller.Button = controller.buttonDown  # Top Right
+moveArmDownSelection: Controller.Button = controller.buttonUp  # Top right down
 
 # wingToggleInSelection: Controller.Button = controller.buttonA  # A button
 wingToggleSelection: Controller.Button = controller.buttonA  # B Button
@@ -40,7 +40,7 @@ WINGS_TRIPORT_PORT1: DigitalOut = DigitalOut(brain.three_wire_port.h)
 
 
 # Intake
-INTAKE_MOTOR_PORT: int = Ports.PORT19
+INTAKE_MOTOR_PORT: int = Ports.PORT12
 
 # Arms
 LEFT_ARM_MOTOR_PORT: int = Ports.PORT13
@@ -57,6 +57,7 @@ RIGHT_BACK_MOTOR_PORT: int = Ports.PORT20
 # Interfaces
 
 # Constants
+IS_SKILL: bool = True
 
 # Motor definitions
 INTAKE_MOTOR: Motor = Motor(INTAKE_MOTOR_PORT, GearSetting.RATIO_18_1, False)
@@ -84,7 +85,8 @@ ARM_MOTOR_GROUP: MotorGroup = MotorGroup(LEFT_ARM_MOTOR, RIGHT_ARM_MOTOR)
 # main()
 def main() -> None:
     # Create a new Competition instance
-    Competition(driver_control, auton_control)
+    auton_control()
+    # Competition(driver_control, auton_control)
 
 
 # Public Methods
@@ -105,13 +107,96 @@ def driver_control() -> None:
 
 
 def auton_control() -> None:
-    # Move forward and back
-    if True:
-        # Skill Auton
-        pass
-    else:
+    if IS_SKILL:
+        # Set drive velocity
+        INTAKE_MOTOR.set_velocity(90, PERCENT)
+        ARM_MOTOR_GROUP.set_velocity(100, PERCENT)
+        LEFT_DOM_MOTOR_GROUP.set_velocity(100, PERCENT)
+        RIGHT_DOM_MOTOR_GROUP.set_velocity(100, PERCENT)
+
+        # Move forward
+        LEFT_DOM_MOTOR_GROUP.spin(REVERSE)
+        RIGHT_DOM_MOTOR_GROUP.spin(REVERSE)
+
+        # Delay
+        wait(0.5, SECONDS)
+
+        # Stop all
+        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
+        RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
+
+        # Turn right
+        LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
+
+        # Delay
+        wait(0.75, SECONDS)
+
+        # Stop
+        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
+
+        # Reverse into slot
+        LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
+        RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
+
+        # Delay
+        wait(0.27, SECONDS)
+
+        # Stop all
+        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
+        RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
+
+        # Adjust
+        RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
+
+        # Delay
+        wait(0.1, SECONDS)
+
+        # Kill
+        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
+        RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
+
+        # Arm Up
+        ARM_MOTOR_GROUP.spin(REVERSE)
+
+        # Delay
+        wait(0.8, SECONDS)
+
+        # Stop ARM
+        ARM_MOTOR_GROUP.stop(BRAKE)
+
+        # Flywheel
+        INTAKE_MOTOR.spin(FORWARD)
+
+        # Delay
+        wait(25, SECONDS)
+
+        # Stop
+        INTAKE_MOTOR.stop(COAST)
+    elif IS_SKILL == False:
         # Normal Auton
-        pass
+        # Set drive velocity
+        INTAKE_MOTOR.set_velocity(90, PERCENT)
+        ARM_MOTOR_GROUP.set_velocity(100, PERCENT)
+        LEFT_DOM_MOTOR_GROUP.set_velocity(100, PERCENT)
+        RIGHT_DOM_MOTOR_GROUP.set_velocity(100, PERCENT)
+
+        # Move forward
+        LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
+        RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
+
+        # Delay
+        wait(3, SECONDS)
+
+        # Move forward
+        LEFT_DOM_MOTOR_GROUP.spin(REVSRE)
+        RIGHT_DOM_MOTOR_GROUP.spin(REVSRE)
+
+        # Delay
+        wait(2, SECONDS)
+
+        # Stop all
+        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
+        RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
 
 
 # Private Methods
@@ -143,7 +228,7 @@ def _driver_control_arm_control_thread() -> None:
             ARM_MOTOR_GROUP.set_velocity(-60, PERCENT)
             ARM_MOTOR_GROUP.spin(FORWARD)
         else:
-            ARM_MOTOR_GROUP.stop(HOLD)
+            ARM_MOTOR_GROUP.stop(BRAKE)
 
         # Stop the Thread from killing itself
         wait(10, MSEC)
@@ -159,7 +244,7 @@ def _driver_control_intake_control_thread() -> None:
             INTAKE_MOTOR.set_velocity(-100, PERCENT)
             INTAKE_MOTOR.spin(FORWARD)
         else:
-            INTAKE_MOTOR.stop(HOLD)
+            INTAKE_MOTOR.stop(COAST)
 
         # Stop the Thread from killing itself
         wait(10, MSEC)
@@ -169,12 +254,14 @@ def _driver_control_wing_control_thread() -> None:
     while 1:
         # Wait for button toggles
         if wingToggleSelection.pressing():
-            if WINGS_TRIPORT_PORT1.value():
+            if WINGS_TRIPORT_PORT1.value() == 1:
                 WINGS_TRIPORT_PORT.set(0)
                 WINGS_TRIPORT_PORT1.set(0)
-            else:
+                wait(0.3, SECONDS)
+            elif WINGS_TRIPORT_PORT1.value() == 0:
                 WINGS_TRIPORT_PORT.set(1)
                 WINGS_TRIPORT_PORT1.set(1)
+                wait(0.3, SECONDS)
 
         wait(10, MSEC)
 
