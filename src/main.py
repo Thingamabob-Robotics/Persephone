@@ -102,7 +102,7 @@ def driver_control() -> None:
     Thread(_driver_control_intake_control_thread)
 
     # Wing Control (threaded)
-    Thread(_driver_control_wing_control_thread)
+    # Thread(_driver_control_wing_control_thread)
 
 
 def auton_control() -> None:
@@ -174,9 +174,22 @@ def auton_control() -> None:
 
         # TODO:
         # 1. 180 Turn + Adjust (Avoid the metal pole)
-        # 2. Move Forward
-        # 3. Wings open
+        RIGHT_DOM_MOTOR_GROUP.spin(REVERSE)
+
+        # Delay
+        wait(1.2, SECONDS)
+
+        # 3. Wings open N/A
+
         # 4. Score (drive forward)
+        LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
+        RIGHT_DOM_MOTOR_GROUP.spin(FOWARD)
+
+        # Delay
+        wait(10, SECONDS)
+
+        LEFT_DOM_MOTOR_GROUP.stop(COAST)
+        RIGHT_DOM_MOTOR_GROUP.stop(COAST)
 
     elif IS_SKILL == False:
         # Normal Auton
