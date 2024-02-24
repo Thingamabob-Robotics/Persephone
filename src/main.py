@@ -57,7 +57,7 @@ RIGHT_BACK_MOTOR_PORT: int = Ports.PORT20
 # Interfaces
 
 # Constants
-IS_SKILL: bool = False
+IS_SKILL: bool = True
 
 # Motor definitions
 INTAKE_MOTOR: Motor = Motor(INTAKE_MOTOR_PORT, GearSetting.RATIO_18_1, False)
@@ -85,8 +85,8 @@ ARM_MOTOR_GROUP: MotorGroup = MotorGroup(LEFT_ARM_MOTOR, RIGHT_ARM_MOTOR)
 # main()
 def main() -> None:
     # Create a new Competition instance
-    # auton_control()
-    Competition(driver_control, auton_control)
+    auton_control()
+    # Competition(driver_control, auton_control)
 
 
 # Public Methods
@@ -108,88 +108,82 @@ def driver_control() -> None:
 def auton_control() -> None:
     if IS_SKILL:
         # Set drive velocity
-        INTAKE_MOTOR.set_velocity(90, PERCENT)
+        INTAKE_MOTOR.set_velocity(100, PERCENT)
+        ARM_MOTOR_GROUP.set_velocity(-100, PERCENT)
+        LEFT_DOM_MOTOR_GROUP.set_velocity(-100, PERCENT)
+        RIGHT_DOM_MOTOR_GROUP.set_velocity(-100, PERCENT)
+
+        # Move out and stop
+        LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
+        RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
+        wait(0.7, SECONDS)
+        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
+        RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
+
+        # Align with bar
+        LEFT_DOM_MOTOR_GROUP.spin(REVERSE)
+        wait(0.57, SECONDS)
+        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
+
+        # Move into position and arm
+        LEFT_DOM_MOTOR_GROUP.spin(REVERSE)
+        RIGHT_DOM_MOTOR_GROUP.spin(REVERSE)
+        wait(0.5, SECONDS)
+        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
+        RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
+        ARM_MOTOR_GROUP.spin(FORWARD)
+        wait(0.8, SECONDS)
+        ARM_MOTOR_GROUP.stop(HOLD)
+
+        # # Adjust
+        # RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
+        # wait(0.2, SECONDS)
+        # RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
+
+        # # Re Adjust
+        # LEFT_DOM_MOTOR_GROUP.spin(REVERSE)
+        # RIGHT_DOM_MOTOR_GROUP.spin(REVERSE)
+        # wait(0.3, SECONDS)
+        # LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
+        # RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
+
+        # Spin ARM for 30 seconds
+        INTAKE_MOTOR.spin(FORWARD)
+        wait(0, SECONDS)
+        INTAKE_MOTOR.stop(COAST)
+
+        # Arm DOWN
+        ARM_MOTOR_GROUP.spin(REVERSE)
+        wait(0.8, SECONDS)
+        ARM_MOTOR_GROUP.stop(COAST)
+
+        # Move out and adjust
+        LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
+        RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
+        wait(0.4, SECONDS)
+        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
+        RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
+
+        # 180
+        LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
+        wait(0.6, SECONDS)
+        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
+
+        # Change config
+        INTAKE_MOTOR.set_velocity(100, PERCENT)
         ARM_MOTOR_GROUP.set_velocity(100, PERCENT)
         LEFT_DOM_MOTOR_GROUP.set_velocity(100, PERCENT)
         RIGHT_DOM_MOTOR_GROUP.set_velocity(100, PERCENT)
 
-        # Move forward
-        LEFT_DOM_MOTOR_GROUP.spin(REVERSE)
-        RIGHT_DOM_MOTOR_GROUP.spin(REVERSE)
-
-        # Delay
-        wait(0.5, SECONDS)
-
-        # Stop all
-        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
-        RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
-
-        # Turn right
-        LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
-
-        # Delay
-        wait(0.75, SECONDS)
-
-        # Stop
-        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
-
-        # Reverse into slot
+        # Enter the new side
         LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
         RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
 
-        # Delay
-        wait(0.27, SECONDS)
+        # Push from right
 
-        # Stop all
-        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
-        RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
+        # Push from center
 
-        # Adjust
-        RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
-
-        # Delay
-        wait(0.1, SECONDS)
-
-        # Kill
-        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
-        RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
-
-        # Arm Up
-        ARM_MOTOR_GROUP.spin(REVERSE)
-
-        # Delay
-        wait(0.8, SECONDS)
-
-        # Stop ARM
-        ARM_MOTOR_GROUP.stop(BRAKE)
-
-        # Flywheel
-        INTAKE_MOTOR.spin(FORWARD)
-
-        # Delay
-        wait(25, SECONDS)
-
-        # Stop
-        INTAKE_MOTOR.stop(COAST)
-
-        # TODO:
-        # 1. 180 Turn + Adjust (Avoid the metal pole)
-        RIGHT_DOM_MOTOR_GROUP.spin(REVERSE)
-
-        # Delay
-        wait(1.2, SECONDS)
-
-        # 3. Wings open N/A
-
-        # 4. Score (drive forward)
-        LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
-        RIGHT_DOM_MOTOR_GROUP.spin(FOWARD)
-
-        # Delay
-        wait(10, SECONDS)
-
-        LEFT_DOM_MOTOR_GROUP.stop(COAST)
-        RIGHT_DOM_MOTOR_GROUP.stop(COAST)
+        # Push from left
 
     elif IS_SKILL == False:
         # Normal Auton
