@@ -57,7 +57,7 @@ RIGHT_BACK_MOTOR_PORT: int = Ports.PORT20
 # Interfaces
 
 # Constants
-IS_SKILL: bool = True
+IS_SKILL: bool = False
 
 # Motor definitions
 INTAKE_MOTOR: Motor = Motor(INTAKE_MOTOR_PORT, GearSetting.RATIO_18_1, False)
@@ -85,8 +85,8 @@ ARM_MOTOR_GROUP: MotorGroup = MotorGroup(LEFT_ARM_MOTOR, RIGHT_ARM_MOTOR)
 # main()
 def main() -> None:
     # Create a new Competition instance
-    auton_control()
-    # Competition(driver_control, auton_control)
+    # auton_control()
+    Competition(driver_control, auton_control)
 
 
 # Public Methods
@@ -157,27 +157,36 @@ def auton_control() -> None:
         wait(0.8, SECONDS)
         ARM_MOTOR_GROUP.stop(COAST)
 
-        # Move out and adjust
+        # Move out
         LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
         RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
-        wait(0.4, SECONDS)
+        wait(1.35, SECONDS)
         LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
         RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
 
-        # 180
+        # Adjust
         LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
-        wait(0.6, SECONDS)
+        wait(0.5, SECONDS)
         LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
 
-        # Change config
-        INTAKE_MOTOR.set_velocity(100, PERCENT)
-        ARM_MOTOR_GROUP.set_velocity(100, PERCENT)
-        LEFT_DOM_MOTOR_GROUP.set_velocity(100, PERCENT)
-        RIGHT_DOM_MOTOR_GROUP.set_velocity(100, PERCENT)
-
-        # Enter the new side
+        # Move out
         LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
         RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
+        wait(1.35, SECONDS)
+        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
+        RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
+
+        # Turn right
+        RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
+        wait(0.5, SECONDS)
+        RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
+
+        # Move out
+        LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
+        RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
+        wait(0.75, SECONDS)
+        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
+        RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
 
         # Push from right
 
@@ -213,6 +222,12 @@ def auton_control() -> None:
         # Stop all
         LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
         RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
+
+        # Arm UP
+        ARM_MOTOR_GROUP.set_velocity(-100, PERCENT)
+        ARM_MOTOR_GROUP.spin(FORWARD)
+        wait(0.8, SECONDS)
+        ARM_MOTOR_GROUP.stop(HOLD)
 
 
 # Private Methods
