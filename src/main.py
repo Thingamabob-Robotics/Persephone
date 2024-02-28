@@ -108,7 +108,7 @@ def driver_control() -> None:
 def auton_control() -> None:
     if IS_SKILL:
         # Set drive velocity
-        INTAKE_MOTOR.set_velocity(100, PERCENT)
+        INTAKE_MOTOR.set_velocity(-100, PERCENT)
         ARM_MOTOR_GROUP.set_velocity(-100, PERCENT)
         LEFT_DOM_MOTOR_GROUP.set_velocity(-100, PERCENT)
         RIGHT_DOM_MOTOR_GROUP.set_velocity(-100, PERCENT)
@@ -135,21 +135,21 @@ def auton_control() -> None:
         wait(0.8, SECONDS)
         ARM_MOTOR_GROUP.stop(HOLD)
 
-        # # Adjust
-        # RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
-        # wait(0.2, SECONDS)
-        # RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
+        # Adjust
+        RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
+        wait(0.18, SECONDS)
+        RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
 
-        # # Re Adjust
-        # LEFT_DOM_MOTOR_GROUP.spin(REVERSE)
-        # RIGHT_DOM_MOTOR_GROUP.spin(REVERSE)
-        # wait(0.3, SECONDS)
-        # LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
-        # RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
+        # Re Adjust
+        LEFT_DOM_MOTOR_GROUP.spin(REVERSE)
+        RIGHT_DOM_MOTOR_GROUP.spin(REVERSE)
+        wait(0.23, SECONDS)
+        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
+        RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
 
         # Spin ARM for 30 seconds
         INTAKE_MOTOR.spin(FORWARD)
-        wait(0, SECONDS)
+        wait(30, SECONDS)
         INTAKE_MOTOR.stop(COAST)
 
         # Arm DOWN
@@ -157,42 +157,86 @@ def auton_control() -> None:
         wait(0.8, SECONDS)
         ARM_MOTOR_GROUP.stop(COAST)
 
+        # Adjust
+        RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
+        wait(0.215, SECONDS)
+        RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
+
         # Move out
         LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
         RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
-        wait(1.35, SECONDS)
+        wait(0.70, SECONDS)
         LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
         RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
 
         # Adjust
         LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
-        wait(0.5, SECONDS)
+        wait(0.10, SECONDS)
         LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
 
         # Move out
         LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
         RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
-        wait(1.35, SECONDS)
+        wait(1.27, SECONDS)
         LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
         RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
 
-        # Turn right
-        RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
-        wait(0.5, SECONDS)
-        RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
+        # Turn Left
+        LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
+        wait(0.25, SECONDS)
+        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
 
         # Move out
         LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
         RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
-        wait(0.75, SECONDS)
+        wait(1.20, SECONDS)
         LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
         RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
 
-        # Push from right
+        # Turn Left to the goal
+        LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
+        wait(0.55, SECONDS)
+        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
 
-        # Push from center
+        # Move to goal
+        LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
+        RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
+        wait(0.25, SECONDS)
+        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
+        RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
 
-        # Push from left
+        # Move back
+        LEFT_DOM_MOTOR_GROUP.spin(REVERSE)
+        RIGHT_DOM_MOTOR_GROUP.spin(REVERSE)
+        wait(0.55, SECONDS)
+        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
+        RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
+
+        # Turn Left to the goal
+        LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
+        wait(0.13, SECONDS)
+        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
+
+        # Move in
+        LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
+        RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
+        wait(0.50, SECONDS)
+        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
+        RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
+
+        # Move back
+        LEFT_DOM_MOTOR_GROUP.spin(REVERSE)
+        RIGHT_DOM_MOTOR_GROUP.spin(REVERSE)
+        wait(0.55, SECONDS)
+        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
+        RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
+
+        # Move in
+        LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
+        RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
+        wait(0.50, SECONDS)
+        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
+        RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
 
     elif IS_SKILL == False:
         # Normal Auton
@@ -217,7 +261,7 @@ def auton_control() -> None:
         RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
 
         # Delay
-        wait(3, SECONDS)
+        wait(2.75, SECONDS)
 
         # Stop all
         LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
