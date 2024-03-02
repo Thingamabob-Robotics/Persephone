@@ -38,7 +38,6 @@ rightAxisSelection: Controller.Axis = controller.axis2  # Top-Bottom right
 WINGS_TRIPORT_PORT: DigitalOut = DigitalOut(brain.three_wire_port.b)
 WINGS_TRIPORT_PORT1: DigitalOut = DigitalOut(brain.three_wire_port.h)
 
-
 # Intake
 INTAKE_MOTOR_PORT: int = Ports.PORT12
 
@@ -57,7 +56,7 @@ RIGHT_BACK_MOTOR_PORT: int = Ports.PORT20
 # Interfaces
 
 # Constants
-IS_SKILL: bool = False
+IS_SKILL: bool = True
 
 # Motor definitions
 INTAKE_MOTOR: Motor = Motor(INTAKE_MOTOR_PORT, GearSetting.RATIO_18_1, False)
@@ -84,8 +83,10 @@ ARM_MOTOR_GROUP: MotorGroup = MotorGroup(LEFT_ARM_MOTOR, RIGHT_ARM_MOTOR)
 
 # main()
 def main() -> None:
-    # Create a new Competition instance
+    # Debugging
     # auton_control()
+
+    # Create a new Competition instance
     Competition(driver_control, auton_control)
 
 
@@ -137,7 +138,7 @@ def auton_control() -> None:
 
         # Adjust
         RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
-        wait(0.18, SECONDS)
+        wait(0.17, SECONDS)
         RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
 
         # Re Adjust
@@ -231,47 +232,35 @@ def auton_control() -> None:
         LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
         RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
 
+        # Turn Left to the goal
+        LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
+        wait(0.1, SECONDS)
+        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
+
         # Move in
         LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
         RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
-        wait(0.50, SECONDS)
+        wait(0.70, SECONDS)
+        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
+        RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
+
+        # Move back
+        LEFT_DOM_MOTOR_GROUP.spin(REVERSE)
+        RIGHT_DOM_MOTOR_GROUP.spin(REVERSE)
+        wait(0.45, SECONDS)
+        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
+        RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
+
+        # Move in
+        LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
+        RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
+        wait(0.70, SECONDS)
         LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
         RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
 
     elif IS_SKILL == False:
-        # Normal Auton
-        LEFT_DOM_MOTOR_GROUP.set_velocity(100, PERCENT)
-        RIGHT_DOM_MOTOR_GROUP.set_velocity(100, PERCENT)
-
-        # Move forward
-        LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
-        RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
-
-        # Delay
-        wait(4, SECONDS)
-
-        # Stop all
-        LEFT_DOM_MOTOR_GROUP.stop(COAST)
-        RIGHT_DOM_MOTOR_GROUP.stop(COAST)
-
-        # Move backwards
-        LEFT_DOM_MOTOR_GROUP.set_velocity(-100, PERCENT)
-        RIGHT_DOM_MOTOR_GROUP.set_velocity(-100, PERCENT)
-        LEFT_DOM_MOTOR_GROUP.spin(FORWARD)
-        RIGHT_DOM_MOTOR_GROUP.spin(FORWARD)
-
-        # Delay
-        wait(2.75, SECONDS)
-
-        # Stop all
-        LEFT_DOM_MOTOR_GROUP.stop(BRAKE)
-        RIGHT_DOM_MOTOR_GROUP.stop(BRAKE)
-
-        # Arm UP
-        ARM_MOTOR_GROUP.set_velocity(-100, PERCENT)
-        ARM_MOTOR_GROUP.spin(FORWARD)
-        wait(0.8, SECONDS)
-        ARM_MOTOR_GROUP.stop(HOLD)
+        # Early return
+        return
 
 
 # Private Methods
